@@ -20,12 +20,15 @@ class GitCommand(sublime_plugin.TextCommand):
         proc = subprocess.Popen(command,stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=False, universal_newlines=True)
         self.output = proc.communicate()[0].split("\n")
         sublime.set_timeout(self.draw, 0)
+
+    def win(self):
+        return self.view.window() or sublime.active_window()
     def draw(self):
-        self.view.window().show_quick_panel(self.output[:-1],self.panel_done,sublime.MONOSPACE_FONT)
+        self.win().show_quick_panel(self.output[:-1],self.panel_done,sublime.MONOSPACE_FONT)
     def panel_done(self, index):
         pass
     def folder(self):
-        return self.view.window().folders().pop()
+        return self.win().folders().pop()
 
 class GitPullCommand(GitCommand):
     def run(self,edit):
