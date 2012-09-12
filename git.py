@@ -29,7 +29,7 @@ class GitPullCommand(GitCommand):
         self.run_command(edit,["git","pull"])
 class GitPushCommand(GitCommand):
     def run(self,edit):
-        self.run_command(edit,["git","push","origin","master"])
+        self.run_command(edit,["git","push","-u","origin","master"])
 class GitLogCommand(GitCommand):
     def run(self,edit):
         self.run_command(edit,["git","log",'--pretty=format:%s [%ce %h, %ar]',"--abbrev-commit"])
