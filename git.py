@@ -15,7 +15,7 @@ class PromptGitCommitCommand(sublime_plugin.WindowCommand):
 class GitCommand(sublime_plugin.TextCommand): 
     def run_command(self,edit,command): 
         os.chdir(self.folder())
-        proc = subprocess.Popen(command,stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=False, universal_newlines=True)
+        proc = subprocess.Popen(command,stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=False)
         self.output = proc.communicate()[0].split("\n")
         self.view.window().show_quick_panel(self.output,self.panel_done,sublime.MONOSPACE_FONT)
     def panel_done(self, index):
