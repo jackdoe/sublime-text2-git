@@ -13,12 +13,15 @@ class PromptGitCommitCommand(sublime_plugin.WindowCommand):
             pass
 
 class GitCommand(sublime_plugin.TextCommand): 
-    def run_command(self,edit,command): 
+    def run_thread(self,edit,command):
         os.chdir(self.folder())
+        thread.start_new_thread(self.run_command,(edit,command))
+    def run_command(self,edit,command): 
         proc = subprocess.Popen(command,stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=False, universal_newlines=True)
         self.output = proc.communicate()[0].split("\n")
+        sublime.set_timeout(self.draw, 0)
+    def draw(self):
         self.view.window().show_quick_panel(self.output[:-1],self.panel_done,sublime.MONOSPACE_FONT)
-
     def panel_done(self, index):
         pass
     def folder(self):
@@ -26,15 +29,15 @@ class GitCommand(sublime_plugin.TextCommand):
 
 class GitPullCommand(GitCommand):
     def run(self,edit):
-        self.run_command(edit,["git","pull"])
+        self.run_thread(edit,["git","pull"])
 class GitPushCommand(GitCommand):
     def run(self,edit):
-        self.run_command(edit,["git","push","-u","origin","master"])
+        self.run_thread(edit,["git","push","origin","master"])
 class GitLogCommand(GitCommand):
     def run(self,edit):
-        self.run_command(edit,["git","log",'--pretty=format:%s [%ce %h, %ar]',"--abbrev-commit"])
+        self.run_thread(edit,["git","log",'--pretty=format:%s [%ce %h, %ar]',"--abbrev-commit"])
 
 class GitCommitCommand(GitCommand):
     def run(self,edit,line):
-        self.run_command(edit,["git","commit","-a","-m",line])
+        self.run_thread(edit,["git","commit","-a","-m",line])
 
