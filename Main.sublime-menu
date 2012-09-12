@@ -1,0 +1,18 @@
+[
+    {
+        "id": "tools",
+        "children":
+        [
+            {
+                "caption": "Git",
+                "children":
+                [
+                    { "caption": "Pull", "command": "git_pull" },
+                    { "caption": "Push", "command": "git_push" },
+                    { "caption": "Commit", "command": "prompt_git_commit" },
+                    { "caption": "Log", "command": "git_log" }
+                ]
+            }
+        ]
+    }
+]
