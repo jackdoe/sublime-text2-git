@@ -15,17 +15,20 @@ class PromptGitCommitCommand(sublime_plugin.WindowCommand):
 class GitCommand(sublime_plugin.TextCommand): 
     def run_thread(self,edit,command):
         os.chdir(self.folder())
+        self.panel = self.win().get_output_panel("git")
         thread.start_new_thread(self.run_command,(edit,command))
     def run_command(self,edit,command): 
         proc = subprocess.Popen(command,stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=False, universal_newlines=True)
-        self.output = proc.communicate()[0].split("\n")
+        self.output = proc.communicate()[0]
         sublime.set_timeout(self.draw, 20)
     def win(self):
         return self.view.window() or sublime.active_window()
     def draw(self):
-        self.win().show_quick_panel(self.output,self.panel_done,sublime.MONOSPACE_FONT)
-    def panel_done(self, index):
-        pass
+        edit = self.panel.begin_edit()
+        self.panel.erase(edit, sublime.Region(0, self.panel.size()))
+        self.panel.insert(edit, 0, self.output)  
+        self.panel.end_edit(edit)
+        self.win().run_command("show_panel", {"panel": "output.git"})
     def folder(self):
         return self.win().folders().pop()
 
